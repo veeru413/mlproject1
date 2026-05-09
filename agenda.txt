@@ -1,0 +1,8 @@
+Agenda
+1) Setup the github{repository}
+    a) new environment
+    b) setup.py file- setup.py is a Python file, the presence of which is an indication that the module/package 
+        you are about to install has likely been packaged and distributed with Distutils, which is the standard for 
+        distributing Python Modules.
+    c) requirements.txt
+2) create src and build packages- now this is where the main part of the code will be present here
