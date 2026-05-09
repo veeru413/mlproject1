@@ -6,3 +6,9 @@ Agenda
         distributing Python Modules.
     c) requirements.txt
 2) create src and build packages- now this is where the main part of the code will be present here
+3) in src we create a components folder, which has codes for our project like data ingestion, transformation(OHE,etc)
+4) we create a pipeline folder in src, where we have 2 types
+    training pipeline 
+    prediction pipeline
+5) we create logger and exception files and utils-to push model on mongo
+6) write code for logger and exception

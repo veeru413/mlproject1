@@ -3,7 +3,7 @@
 # we will raise the CustomException and pass the error and error_detail to it, so that we can get the custom 
 # error message with file name and line number where the exception occurred.
 
-import logging
+from src.logger import logging # we are importing the logging module from the logger.py file that we have created in the src folder, so that we can log the error messages in the log file that we have configured in the logger.py file.
 import sys #sys module is used to get the exception information
 
 def error_message_detail(error,error_detail:sys): # here :sys means that the error_detail parameter is of type sys
@@ -21,3 +21,4 @@ class CustomException(Exception): # we are creating a custom exception class tha
     def __str__(self): # we are overriding the __str__ method of the Exception class to return the custom error message when the exception is printed.
         return self.error_message
     
+
