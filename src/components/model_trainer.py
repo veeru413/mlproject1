@@ -52,8 +52,40 @@ class ModelTrainer:
                 "AdaBoost Regressor": AdaBoostRegressor(),
             }
 
+            # we do hyperparameter tuning for all the models using the evaluate_model function that we have created in the utils.py file, and in that function we will be evaluating all the models and then we will be getting the best model score and best model name, so that we can save the best model in the artifacts folder and also we can use it in the model evaluation part to evaluate the model on the testing data, so that we can get an idea of how good our model is performing on the testing data, so that we can make improvements in our model if needed.
+            params = {
+                "Decision Tree": {
+                    "criterion": ["squared_error", "friedman_mse", "absolute_error", "poisson"],
+                },
+                "Random Forest": {
+                    "n_estimators": [8, 16, 32, 64, 128, 256],
+                },
+                "Gradient Boosting": {
+                    "learning_rate": [0.1, 0.01, 0.05, 0.001],
+                    "subsample": [0.6, 0.7, 0.75, 0.8, 0.85, 0.9],
+                    "n_estimators": [8, 16, 32, 64, 128, 256],
+                },
+                "Linear Regression": {},
+                "K-Neighbors Regressor": {
+                    "n_neighbors": [5, 7, 9, 11, 13, 15],
+                },
+                "XGBRegressor": {
+                    "learning_rate": [0.1, 0.01, 0.05, 0.001],
+                    "n_estimators": [8, 16, 32, 64, 128, 256],
+                },
+                "CatBoosting Regressor": {
+                    "depth": [6, 8, 10],
+                    "learning_rate": [0.01, 0.05, 0.1],
+                    "iterations": [30, 50, 100],
+                },
+                "AdaBoost Regressor": {
+                    "learning_rate": [0.1, 0.01, 0.05, 0.001],
+                    "n_estimators": [8, 16, 32, 64, 128, 256],
+                },
+            }
+
             #evaluate_model is a func we create in the utils.py file and in that func we will be evaluating all the models and then we will be getting the best model score and best model name
-            model_report: dict = evaluate_model(X_train=X_train, y_train=y_train, X_test=X_test, y_test=y_test, models=models)
+            model_report: dict = evaluate_model(X_train=X_train, y_train=y_train, X_test=X_test, y_test=y_test, models=models, params=params)
 
             # to get the best model score from the model_report dictionary
             best_model_score = max(sorted(model_report.values()))
