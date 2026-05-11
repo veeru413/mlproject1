@@ -15,7 +15,7 @@ from sklearn.model_selection import train_test_split
 from dataclasses import dataclass
 
 from src.components.data_transformation import DataTransformation, DataTransformationConfig # we are importing the DataTransformation class from the data_transformation.py file that we have created in the components folder, so that we can use it to call the data transformation part after the data ingestion part is completed, so that we can get the transformed data for our model training part.
-
+from src.components.model_trainer import ModelTrainer, ModelTrainerConfig # we are importing the ModelTrainer class from the model_trainer.py file that we have created in the components folder, so that we can use it to call the model training part after the data transformation part is completed, so that we can get the trained model for our model evaluation part.
 
 @dataclass # here we use decorator dataclass to create a dataclass for the data ingestion configuration, which will contain the path of the raw data folder, the path of the train data folder and the path of the test data folder.
 class DataIngestionConfig: # we are creating a dataclass for the data ingestion configuration, which will contain the path of the raw data folder, the path of the train data folder and the path of the test data folder.
@@ -64,9 +64,12 @@ if __name__ == "__main__":
     # print(train_data) # we are printing the path of the train data folder to check if it is correct or not.
     # print(test_data) # we are printing the path of the test data folder to check if it is correct or not.
     data_transformation = DataTransformation() # we are creating an object of the DataTransformation class, so that we can call
-    data_transformation.initiate_data_transformation(train_data,test_data) # we are calling the initiate_data_transformation method of the DataTransformation class and passing the path of the train data folder and test data folder to it, so that we can test the data transformation part as well after the data ingestion part is completed, so that we can get the transformed data for our model training part.
+    train_arr,test_arr, path = data_transformation.initiate_data_transformation(train_data,test_data) # we are calling the initiate_data_transformation method of the DataTransformation class and passing the path of the train data folder and test data folder to it, so that we can test the data transformation part as well after the data ingestion part is completed, so that we can get the transformed data for our model training part.
     # so we combined data ingestion and data transformation part together to test both the parts together, so that we can get the transformed data for our model training part after the data ingestion part is completed, so that we can get the train and test data for our model training part.
     
+    modeltrainer = ModelTrainer() # we are creating an object of the ModelTrainer class, so that we can call the initiate_model_trainer method to test the model training part as well after the data ingestion and data transformation part is completed, so that we can get the trained model for our model evaluation part.
+    print(modeltrainer.initiate_model_trainer(train_arr, test_arr)) # we are calling the initiate_model_trainer method of the ModelTrainer class and passing the transformed train and test data to it, so that we can test the model training part as well after the data ingestion and data transformation part is completed, so that we can get the trained model for our model evaluation part.
+    # this returns the r2 score for the testing data, so that we can evaluate the model on the testing data, and also we can get an idea of how good our model is performing on the testing data, so that we can make improvements in our model if needed.
 
 #hence we get artifacts folder and the split
 # hence we can read the data from any api or mongo db and then extract or ingest the data and then 
