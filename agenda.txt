@@ -12,3 +12,10 @@ Agenda
     prediction pipeline
 5) we create logger and exception files and utils-to push model on mongo
 6) write code for logger and exception
+7) we do data ingestion now
+8) then we do data_tranformation simultaneuously editing the utils.py file as well in each of the three steps 
+9) then we do the model training part and mak eit such that on runnng data_ingestion all the other 2 files also run
+10) we do hyperparameter tuning part 
+11) now we implement the prediction pipeline
+12) here we create a webapp to put in input values for data and then make predictions
+13) we do deployment
