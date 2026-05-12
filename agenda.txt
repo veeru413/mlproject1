@@ -46,4 +46,4 @@ AWS ECR using EC2 instance
 
             newgrp docker
 7) create runner in github
-8) We add secret keys in the settings of github
+8) We add secret keys in the settings of github-http://18.61.228.118:8080/predict

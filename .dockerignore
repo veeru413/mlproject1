@@ -15,4 +15,3 @@ notebook/
 logs/
 mlproject.egg-info/
 catboost_info/
-artifacts/
