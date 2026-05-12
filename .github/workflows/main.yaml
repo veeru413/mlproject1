@@ -22,14 +22,17 @@ jobs:
       - name: Run Tests
         run: echo "Running Tests"
 
+
   build-and-push-ecr-image:
     name: Continuous Delivery
     needs: integration
     runs-on: ubuntu-latest
 
     steps:
+
       - name: Checkout Code
         uses: actions/checkout@v3
+
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -38,9 +41,23 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
+
+
+      - name: Debug Variables
+        env:
+          ECR_REGISTRY: ${{ secrets.AWS_ECR_LOGIN_URI }}
+          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_NAME }}
+          IMAGE_TAG: latest
+
+        run: |
+          echo "Registry: [$ECR_REGISTRY]"
+          echo "Repository: [$ECR_REPOSITORY]"
+          echo "Tag: [$IMAGE_TAG]"
+
 
       - name: Build Docker Image
         env:
@@ -49,8 +66,18 @@ jobs:
           IMAGE_TAG: latest
 
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+          echo "Starting Docker Build..."
+
+          FULL_IMAGE_NAME="$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
+          echo "Full Image Name:"
+          echo $FULL_IMAGE_NAME
+
+          docker build -t "$FULL_IMAGE_NAME" .
+
+          docker push "$FULL_IMAGE_NAME"
+
 
   deploy-on-ec2:
     name: Continuous Deployment
@@ -58,8 +85,10 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      - name: Checkout
+
+      - name: Checkout Code
         uses: actions/checkout@v3
+
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -68,23 +97,30 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Pull Docker Image
+
+      - name: Pull Latest Docker Image
         run: |
           docker pull ${{ secrets.AWS_ECR_LOGIN_URI }}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
+
 
       - name: Stop Existing Container
         run: |
           docker stop mltest || true
           docker rm mltest || true
 
+
       - name: Run Docker Container
         run: |
-          docker run -d -p 8080:8080 \
+          docker run -d \
+          -p 8080:8080 \
           --name mltest \
           ${{ secrets.AWS_ECR_LOGIN_URI }}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
 
+
       - name: Clean Docker Images
-        run: docker system prune -f
+        run: |
+          docker system prune -f
