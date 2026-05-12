@@ -19,3 +19,30 @@ Agenda
 11) now we implement the prediction pipeline
 12) here we create a webapp to put in input values for data and then make predictions
 13) we do deployment
+
+
+AWS ECR using EC2 instance
+1) Docker build is checked
+2) Github Workflow 
+3) IAM user creation in AWS
+4) CREATE an ECR ie a repository
+5) EC2 instance creation in the ECR repository
+6) docker setup in EC2 instance
+            ## Docker Setup In EC2 commands to be Executed
+
+            #optinal
+
+            sudo apt-get update -y
+
+            sudo apt-get upgrade
+
+            #required
+
+            curl -fsSL https://get.docker.com -o get-docker.sh
+
+            sudo sh get-docker.sh
+
+            sudo usermod -aG docker ubuntu
+
+            newgrp docker
+
