@@ -93,6 +93,11 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
 
 
+      - name: Clean Docker Space
+        run: |
+          docker system prune -a -f
+          docker volume prune -f
+
       - name: Pull Latest Docker Image
         run: |
           docker pull ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
