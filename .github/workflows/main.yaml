@@ -23,6 +23,7 @@ jobs:
         run: echo "Running Tests"
 
 
+
   build-and-push-ecr-image:
     name: Continuous Delivery
     needs: integration
@@ -47,21 +48,9 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
 
 
-      - name: Debug Variables
-        env:
-          ECR_REGISTRY: ${{ secrets.AWS_ECR_LOGIN_URI }}
-          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_NAME }}
-          IMAGE_TAG: latest
-
-        run: |
-          echo "Registry: [$ECR_REGISTRY]"
-          echo "Repository: [$ECR_REPOSITORY]"
-          echo "Tag: [$IMAGE_TAG]"
-
-
       - name: Build Docker Image
         env:
-          ECR_REGISTRY: ${{ secrets.AWS_ECR_LOGIN_URI }}
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_NAME }}
           IMAGE_TAG: latest
 
@@ -69,14 +58,15 @@ jobs:
 
           echo "Starting Docker Build..."
 
-          FULL_IMAGE_NAME="$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+          FULL_IMAGE_NAME="${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}"
 
           echo "Full Image Name:"
-          echo $FULL_IMAGE_NAME
+          echo "$FULL_IMAGE_NAME"
 
           docker build -t "$FULL_IMAGE_NAME" .
 
           docker push "$FULL_IMAGE_NAME"
+
 
 
   deploy-on-ec2:
@@ -99,12 +89,13 @@ jobs:
 
 
       - name: Login to Amazon ECR
+        id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
 
       - name: Pull Latest Docker Image
         run: |
-          docker pull ${{ secrets.AWS_ECR_LOGIN_URI }}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
+          docker pull ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
 
 
       - name: Stop Existing Container
@@ -118,7 +109,7 @@ jobs:
           docker run -d \
           -p 8080:8080 \
           --name mltest \
-          ${{ secrets.AWS_ECR_LOGIN_URI }}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
+          ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
 
 
       - name: Clean Docker Images
