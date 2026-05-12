@@ -40,7 +40,7 @@ def predict_datapoint():
     
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080) # we are running the web application in debug mode, so that we can get the error messages in the console if any error occurs during the execution of the web application, and also we can get the changes reflected in the web application without having to restart the web application, so that we can develop our web application faster and more efficiently.
+    app.run(host="0.0.0.0", port=8080, debug=True) # we are running the web application in debug mode, so that we can get the error messages in the console if any error occurs during the execution of the web application, and also we can get the changes reflected in the web application without having to restart the web application, so that we can develop our web application faster and more efficiently.
 
 
 
